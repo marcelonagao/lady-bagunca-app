@@ -23,13 +23,16 @@ export default function LadyBaguncaApp() {
 
   // FIREBASE HOOK: Aqui vais carregar os produtos da tua coleção no Firestore
   useEffect(() => {
-    // Exemplo Firebase: 
-    // const fetchProducts = async () => {
-    //   const snapshot = await getDocs(collection(db, 'products'));
-    //   setProducts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
-    // };
-    // fetchProducts();
-    setProducts(mockProducts); // Usando mock para já
+    const fetchProducts = async () => {
+      // 1. Vai ao Firebase buscar a coleção 'products'
+      const snapshot = await getDocs(collection(db, 'products'));
+      
+      // 2. Atualiza o estado do app com os dados reais
+      setProducts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+    };
+    
+    // 3. Executa a função
+    fetchProducts();
   }, []);
 
   const addToCart = (product) => {
