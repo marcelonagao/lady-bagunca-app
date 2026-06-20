@@ -1,58 +1,95 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { initializeApp } from 'firebase/app';
+import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
 
 // ==========================================
-// 1. DADOS MOCK (Substituir pelo Firebase)
+// 1. CONFIGURAÇÃO DO FIREBASE
 // ==========================================
-const mockProducts = [
-  { id: 1, name: 'Batom Líquido Matte Rosa', price: 29.90, image: 'https://via.placeholder.com/150/ff478d/ffffff?text=Batom' },
-  { id: 2, name: 'Paleta de Sombras Neon', price: 89.90, image: 'https://via.placeholder.com/150/ff478d/ffffff?text=Paleta' },
-  { id: 3, name: 'Base Cobertura Extrema', price: 55.00, image: 'https://via.placeholder.com/150/ff478d/ffffff?text=Base' },
-  { id: 4, name: 'Máscara de Cílios Volume', price: 34.50, image: 'https://via.placeholder.com/150/ff478d/ffffff?text=Rimel' },
-  { id: 5, name: 'Sérum Facial Vitamina C', price: 120.00, image: 'https://via.placeholder.com/150/ff478d/ffffff?text=Serum' },
-  { id: 6, name: 'Kit Pincéis Profissionais', price: 75.90, image: 'https://via.placeholder.com/150/ff478d/ffffff?text=Pinceis' },
-];
+const firebaseConfig = {
+  apiKey: "AIzaSyBHpXTB6TtcmhGAdTXMU-Eh_PKmHzDuNcU",
+  authDomain: "lady-bagunca.firebaseapp.com",
+  projectId: "lady-bagunca",
+  storageBucket: "lady-bagunca.firebasestorage.app",
+  messagingSenderId: "397966169444",
+  appId: "1:397966169444:web:5badbcec110aaabb591671"
+};
+
+// Inicializar o Firebase e o Banco de Dados
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
 
 // ==========================================
-// 2. COMPONENTE PRINCIPAL
+// 2. TIPAGENS DO TYPESCRIPT
+// ==========================================
+interface Product {
+  id: string | number;
+  name: string;
+  price: number;
+  image: string;
+}
+
+type ViewState = 'catalog' | 'cart' | 'checkout';
+type PaymentMethod = 'pix' | 'cartao';
+
+// ==========================================
+// 3. COMPONENTE PRINCIPAL
 // ==========================================
 export default function LadyBaguncaApp() {
-  const [products, setProducts] = useState([]);
-  const [cart, setCart] = useState([]);
-  const [currentView, setCurrentView] = useState('catalog'); // 'catalog', 'cart', 'checkout'
-  const [paymentMethod, setPaymentMethod] = useState('pix');
+  const [products, setProducts] = useState<Product[]>([]);
+  const [cart, setCart] = useState<Product[]>([]);
+  const [currentView, setCurrentView] = useState<ViewState>('catalog');
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod>('pix');
 
-  // FIREBASE HOOK: Aqui vais carregar os produtos da tua coleção no Firestore
+  // LER PRODUTOS DO FIREBASE
   useEffect(() => {
     const fetchProducts = async () => {
-      // 1. Vai ao Firebase buscar a coleção 'products'
-      const snapshot = await getDocs(collection(db, 'products'));
-      
-      // 2. Atualiza o estado do app com os dados reais
-      setProducts(snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() })));
+      try {
+        const snapshot = await getDocs(collection(db, 'products'));
+        const productsData = snapshot.docs.map(doc => ({ 
+          id: doc.id, 
+          ...doc.data() 
+        } as Product));
+        
+        setProducts(productsData);
+      } catch (error) {
+        console.error("Erro ao carregar produtos:", error);
+      }
     };
-    
-    // 3. Executa a função
+
     fetchProducts();
   }, []);
 
-  const addToCart = (product) => {
+  const addToCart = (product: Product) => {
     setCart([...cart, product]);
   };
 
-  const removeFromCart = (indexToRemove) => {
+  const removeFromCart = (indexToRemove: number) => {
     setCart(cart.filter((_, index) => index !== indexToRemove));
   };
 
   const cartTotal = cart.reduce((sum, item) => sum + item.price, 0);
 
-  // FIREBASE HOOK: Aqui vais processar a encomenda e salvar no Firestore
-  const handleCheckout = (e) => {
+  // GRAVAR PEDIDO NO FIREBASE
+  const handleCheckout = async (e: React.FormEvent) => {
     e.preventDefault();
-    alert(`Pedido finalizado via ${paymentMethod.toUpperCase()}! Total: R$ ${cartTotal.toFixed(2)}`);
-    // Exemplo Firebase:
-    // await addDoc(collection(db, 'orders'), { items: cart, total: cartTotal, status: 'pending', method: paymentMethod });
-    setCart([]);
-    setCurrentView('catalog');
+    
+    try {
+      // Grava na coleção 'orders'
+      await addDoc(collection(db, 'orders'), {
+        items: cart,
+        total: cartTotal,
+        method: paymentMethod,
+        status: 'pendente',
+        dataPedido: new Date().toISOString()
+      });
+
+      alert(`Pedido finalizado via ${paymentMethod.toUpperCase()}! Total: R$ ${cartTotal.toFixed(2)}`);
+      setCart([]);
+      setCurrentView('catalog');
+    } catch (error) {
+      console.error("Erro ao gravar pedido:", error);
+      alert("Houve um erro ao processar o teu pedido. Tenta novamente.");
+    }
   };
 
   return (
@@ -87,21 +124,25 @@ export default function LadyBaguncaApp() {
         {/* VIEW: CATÁLOGO */}
         {currentView === 'catalog' && (
           <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-3">
-            {products.map(product => (
-              <div key={product.id} className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col transition hover:shadow-md">
-                <img src={product.image} alt={product.name} className="w-full h-36 object-cover" />
-                <div className="p-3 flex flex-col flex-grow">
-                  <h3 className="text-sm text-gray-600 line-clamp-2 flex-grow">{product.name}</h3>
-                  <p className="text-lg font-bold text-[#eb5a22] mt-2">R$ {product.price.toFixed(2)}</p>
-                  <button 
-                    onClick={() => addToCart(product)}
-                    className="mt-3 w-full bg-[#ff478d] text-white py-1.5 rounded text-sm font-semibold hover:bg-pink-600 transition"
-                  >
-                    Comprar
-                  </button>
+            {products.length === 0 ? (
+              <p className="text-white col-span-full text-center py-10">A carregar produtos do Firebase...</p>
+            ) : (
+              products.map(product => (
+                <div key={product.id} className="bg-white rounded-lg shadow-sm overflow-hidden flex flex-col transition hover:shadow-md">
+                  <img src={product.image} alt={product.name} className="w-full h-36 object-cover" />
+                  <div className="p-3 flex flex-col flex-grow">
+                    <h3 className="text-sm text-gray-600 line-clamp-2 flex-grow">{product.name}</h3>
+                    <p className="text-lg font-bold text-[#eb5a22] mt-2">R$ {product.price.toFixed(2)}</p>
+                    <button 
+                      onClick={() => addToCart(product)}
+                      className="mt-3 w-full bg-[#ff478d] text-white py-1.5 rounded text-sm font-semibold hover:bg-pink-600 transition"
+                    >
+                      Comprar
+                    </button>
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         )}
 
