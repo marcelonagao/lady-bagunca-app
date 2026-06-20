@@ -28,6 +28,16 @@ interface Product {
   discount?: number; // Para mostrar um "De/Por"
 }
 
+// --- CONFIGURAÇÃO DO BANNER PRINCIPAL ---
+// Altere os textos e a imagem aqui para atualizar a campanha!
+const destaqueBanner = {
+  titulo: "Descubra a sua",
+  destaque: "beleza única",
+  subtitulo: "Kits campeões de vendas com até 50% OFF para você brilhar.",
+  imagemUrl: "https://images.unsplash.com/photo-1612817288484-6f916006741a?auto=format&fit=crop&w=1000&q=80",
+  botao: "Ver Promoções"
+};
+
 const mockProducts: Product[] = [
   { id: 'mock1', name: 'Batom Líquido Matte Rosa Selva', price: 29.90, discount: 38.90, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=400&q=80' },
   { id: 'mock2', name: 'Paleta de Sombras Neon Vibes', price: 89.90, discount: 119.90, image: 'https://images.unsplash.com/photo-1512496115841-db0aaf528090?auto=format&fit=crop&w=400&q=80' },
@@ -154,23 +164,33 @@ export default function App() {
         {/* VIEW: CATÁLOGO */}
         {currentView === 'catalog' && (
           <>
-            {/* HERO BANNER (Nova seção para impacto visual) */}
-            <div className="w-full bg-[#eb5a22] relative overflow-hidden flex flex-col md:flex-row items-center justify-center px-4 py-12 md:py-16 xl:px-16 mb-8 md:mb-12">
-              <div className="relative z-10 text-center md:text-left md:w-1/2 flex flex-col items-center md:items-start gap-4">
-                <span className="bg-[#ff478d] text-white text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full">Oferta Especial</span>
-                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-white leading-tight">As melhores ofertas <br/>de todo o site</h1>
-                <p className="text-orange-100 text-lg md:text-xl font-medium max-w-md">Kits campeões de vendas com até <strong className="text-white text-2xl">50% OFF</strong></p>
-                <button className="mt-4 bg-white text-[#eb5a22] font-black uppercase tracking-wide px-8 py-4 rounded-full shadow-lg hover:bg-gray-100 transition hover:scale-105">Ver Promoções</button>
+            {/* HERO BANNER (Novo visual - Mais leve e elegante) */}
+            <div className="w-full max-w-7xl mx-auto bg-gradient-to-r from-pink-50 to-orange-50 relative overflow-hidden flex flex-col md:flex-row items-center justify-between px-6 py-10 md:py-16 rounded-3xl mb-8 md:mb-12 mt-6 shadow-sm border border-pink-100/50">
+              <div className="relative z-10 text-center md:text-left md:w-1/2 flex flex-col items-center md:items-start gap-4 lg:pl-10">
+                <span className="bg-[#ff478d] text-white text-[10px] md:text-xs font-black uppercase tracking-widest px-3 py-1 rounded-full shadow-sm">
+                  Oferta Especial
+                </span>
+                <h1 className="text-4xl md:text-5xl lg:text-6xl font-black text-gray-800 leading-tight">
+                  {destaqueBanner.titulo} <br/>
+                  <span className="text-[#eb5a22]">{destaqueBanner.destaque}</span>
+                </h1>
+                <p className="text-gray-600 text-base md:text-lg font-medium max-w-md">
+                  {destaqueBanner.subtitulo}
+                </p>
+                <button className="mt-4 bg-[#eb5a22] text-white font-black uppercase tracking-wide px-8 py-4 rounded-full shadow-lg hover:bg-orange-600 transition hover:scale-105">
+                  {destaqueBanner.botao}
+                </button>
               </div>
-              <div className="hidden md:flex md:w-1/2 justify-end relative z-10">
-                <div className="relative w-72 h-72 lg:w-96 lg:h-96">
-                   <img src="https://images.unsplash.com/photo-1596462502278-27bf85033e5a?auto=format&fit=crop&w=600&q=80" alt="Kits de Beleza" className="object-cover rounded-full shadow-2xl border-4 border-[#ff478d] w-full h-full" />
-                   {/* Decorações no banner */}
-                   <div className="absolute -top-6 -right-6 bg-[#ff478d] text-white font-black text-2xl w-24 h-24 rounded-full flex items-center justify-center shadow-xl rotate-12">-50%</div>
+              
+              <div className="w-full md:w-1/2 mt-8 md:mt-0 flex justify-center relative z-10 lg:pr-10">
+                <div className="relative w-full max-w-sm lg:max-w-md aspect-[4/3]">
+                   <img src={destaqueBanner.imagemUrl} alt="Destaque" className="object-cover rounded-3xl shadow-xl w-full h-full border-4 border-white" />
+                   {/* Badge de desconto no banner */}
+                   <div className="absolute -bottom-4 -left-4 bg-[#ff478d] text-white font-black text-xl w-20 h-20 rounded-full flex items-center justify-center shadow-lg rotate-[-10deg] border-4 border-white">
+                     -50%
+                   </div>
                 </div>
               </div>
-              {/* Elementos decorativos de fundo */}
-              <div className="absolute inset-0 opacity-10 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]"></div>
             </div>
 
             <div className="w-full px-4 md:px-8 xl:px-16 mx-auto">
