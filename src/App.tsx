@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
 
 // ==========================================
-// 1. CONFIGURAÇÃO DO FIREBASE
+// 1. CONFIGURAÇÃO DO FIREBASE E DA LOJA
 // ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBHpXTB6TtcmhGAdTXMU-Eh_PKmHzDuNcU",
@@ -16,6 +16,11 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
+
+// 🎨 LINK DA SUA LOGOMARCA AQUI:
+// Dica: Use uma imagem PNG com fundo transparente para o melhor resultado no cabeçalho branco!
+// Se o arquivo estiver na pasta 'public' do seu projeto, basta colocar "/logo.png".
+const LOGO_URL = "https://placehold.co/250x70/ffffff/ff478d?text=LADY+BAGUN%C3%87A"; 
 
 // ==========================================
 // 2. TIPAGENS & DADOS DE TESTE
@@ -50,7 +55,7 @@ const BANNERS = [
   }
 ];
 
-// Categorias com Imagens (Links atualizados)
+// Categorias com Imagens
 const CATEGORIES_DATA = [
   { name: 'Todas', image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=300&q=80' },
   { name: 'Maquiagem', image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=300&q=80' },
@@ -60,7 +65,7 @@ const CATEGORIES_DATA = [
   { name: 'Kits', image: 'https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=300&q=80' }
 ];
 
-// Produtos Mock com imagens atualizadas
+// Produtos Mock
 const mockProducts: Product[] = [
   { id: 'mock1', name: 'Batom Líquido Matte Rosa Selva Longa Duração', price: 29.90, discount: 38.90, category: 'Maquiagem', freeShipping: true, installments: 2, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=400&q=80' },
   { id: 'mock2', name: 'Paleta de Sombras Neon Vibes 12 Cores Pigmentadas', price: 89.90, discount: 119.90, category: 'Maquiagem', freeShipping: true, installments: 3, image: 'https://images.unsplash.com/photo-1596462502278-27bf85033e5a?auto=format&fit=crop&w=400&q=80' },
@@ -173,12 +178,26 @@ export default function App() {
         <div className="max-w-7xl px-4 lg:px-8 mx-auto">
           <div className="flex justify-between items-center py-4 gap-4 lg:gap-12">
             
-            {/* Logo */}
+            {/* Logo (Agora usando imagem) */}
             <div 
-              className="text-2xl md:text-3xl font-black tracking-tighter cursor-pointer flex flex-col leading-none shrink-0"
+              className="cursor-pointer shrink-0"
               onClick={() => {setCurrentView('catalog'); setSelectedCategory('Todas'); setSearchQuery('');}}
             >
-              <span className="text-[#eb5a22] uppercase tracking-tight">LADY BAGUNÇA</span>
+              <img 
+                src={LOGO_URL} 
+                alt="Lady Bagunça - Outlet da Beleza" 
+                className="h-10 md:h-14 object-contain"
+                onError={(e) => {
+                  // Fallback de segurança: Se a imagem falhar, mostra o texto
+                  e.currentTarget.style.display = 'none';
+                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
+                  e.currentTarget.nextElementSibling?.classList.add('flex');
+                }}
+              />
+              {/* Texto reserva caso a imagem não carregue */}
+              <div className="hidden flex-col leading-none">
+                <span className="text-[#ff478d] text-2xl md:text-3xl font-black uppercase tracking-tight">LADY BAGUNÇA</span>
+              </div>
             </div>
             
             {/* Barra de Pesquisa */}
@@ -245,7 +264,6 @@ export default function App() {
                     key={banner.id}
                     className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                   >
-                    {/* Adicionado onError no banner */}
                     <img 
                       src={banner.image} 
                       alt={banner.alt} 
@@ -290,7 +308,6 @@ export default function App() {
                         className={`snap-start shrink-0 cursor-pointer group flex flex-col items-center gap-3 w-24 md:w-32`}
                       >
                         <div className={`w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden relative shadow-sm transition-transform duration-300 group-hover:scale-105 border-2 ${selectedCategory === category.name ? 'border-[#eb5a22]' : 'border-transparent'}`}>
-                           {/* Adicionado onError nas categorias */}
                            <img 
                              src={category.image} 
                              alt={category.name} 
@@ -339,21 +356,20 @@ export default function App() {
                   {filteredProducts.map(product => (
                     <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden flex flex-col group hover:shadow-md transition duration-300 relative">
                       
-                      {/* Selo de Desconto (Estilo Top-Left) */}
+                      {/* Selo de Desconto */}
                       {product.discount && (
                         <div className="absolute top-3 left-3 bg-[#00a650] text-white text-[10px] md:text-xs font-bold px-2 py-0.5 rounded-sm z-10 shadow-sm">
                           -{Math.round(((product.discount - product.price) / product.discount) * 100)}%
                         </div>
                       )}
 
-                      {/* Coração (Estilo Top-Right) */}
+                      {/* Coração */}
                       <button className="absolute top-3 right-3 text-gray-300 hover:text-[#ff478d] transition z-10 bg-white/80 p-1.5 rounded-full">
                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/></svg>
                       </button>
 
                       {/* Imagem do Produto Centralizada */}
                       <div className="aspect-square bg-white relative p-4 flex items-center justify-center cursor-pointer">
-                        {/* Adicionado onError na imagem do produto */}
                         <img 
                           src={product.image} 
                           alt={product.name} 
@@ -365,32 +381,27 @@ export default function App() {
                       {/* Informações Centralizadas */}
                       <div className="p-4 flex flex-col flex-grow items-center text-center relative border-t border-gray-50 bg-gray-50/30">
                         
-                        {/* Avaliação em Estrelas Centralizadas */}
                         <div className="flex text-yellow-400 mb-2">
                            {[1,2,3,4,5].map(star => (
                              <svg key={star} xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" strokeWidth="1" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
                            ))}
                         </div>
 
-                        {/* Nome do Produto */}
                         <h3 className="text-xs md:text-sm text-gray-700 font-medium line-clamp-2 leading-snug h-10 mb-2 hover:text-[#eb5a22] cursor-pointer">
                           {product.name}
                         </h3>
                         
                         <div className="mt-auto w-full flex flex-col items-center">
-                          {/* Preço Original Riscado */}
                           <div className="min-h-[16px]">
                             {product.discount && (
                               <span className="text-[11px] md:text-xs text-gray-400 line-through">R$ {product.discount.toFixed(2)}</span>
                             )}
                           </div>
                           
-                          {/* Preço Atual */}
                           <span className="text-lg md:text-xl font-bold text-gray-900 leading-none mb-1">
                             R$ {product.price.toFixed(2)}
                           </span>
                           
-                          {/* Botão de Compra Integrado */}
                           <button 
                             onClick={(e) => {e.stopPropagation(); addToCart(product);}}
                             className="mt-4 w-full bg-[#00a650] text-white hover:bg-green-700 py-2.5 rounded-lg text-sm font-semibold transition flex items-center justify-center gap-2 shadow-sm"
@@ -431,7 +442,6 @@ export default function App() {
                     {cart.map((item, index) => (
                       <li key={index} className="py-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                         <div className="flex items-center gap-4">
-                          {/* Adicionado onError nas imagens do carrinho */}
                           <img 
                             src={item.image} 
                             alt={item.name} 
