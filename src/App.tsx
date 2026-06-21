@@ -3,7 +3,7 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore, collection, getDocs, addDoc } from 'firebase/firestore';
 
 // ==========================================
-// 1. CONFIGURAÇÃO DO FIREBASE E DA LOJA
+// 1. CONFIGURAÇÃO DO FIREBASE
 // ==========================================
 const firebaseConfig = {
   apiKey: "AIzaSyBHpXTB6TtcmhGAdTXMU-Eh_PKmHzDuNcU",
@@ -16,11 +16,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
-
-// 🎨 LINK DA SUA LOGOMARCA AQUI:
-// Dica: Use uma imagem PNG com fundo transparente para o melhor resultado no cabeçalho branco!
-// Se o arquivo estiver na pasta 'public' do seu projeto, basta colocar "/logo.png".
-const LOGO_URL = "/logo.jpg"; 
 
 // ==========================================
 // 2. TIPAGENS & DADOS DE TESTE
@@ -178,25 +173,26 @@ export default function App() {
         <div className="max-w-7xl px-4 lg:px-8 mx-auto">
           <div className="flex justify-between items-center py-4 gap-4 lg:gap-12">
             
-            {/* Logo (Agora usando imagem) */}
+            {/* LOGO CUSTOMIZADO (Refletindo o layout do seu arquivo de imagem) */}
             <div 
-              className="cursor-pointer shrink-0"
+              className="cursor-pointer shrink-0 flex flex-col items-center justify-center text-center select-none"
               onClick={() => {setCurrentView('catalog'); setSelectedCategory('Todas'); setSearchQuery('');}}
             >
-              <img 
-                src={LOGO_URL} 
-                alt="Lady Bagunça - Outlet da Beleza" 
-                className="h-10 md:h-14 object-contain"
-                onError={(e) => {
-                  // Fallback de segurança: Se a imagem falhar, mostra o texto
-                  e.currentTarget.style.display = 'none';
-                  e.currentTarget.nextElementSibling?.classList.remove('hidden');
-                  e.currentTarget.nextElementSibling?.classList.add('flex');
-                }}
-              />
-              {/* Texto reserva caso a imagem não carregue */}
-              <div className="hidden flex-col leading-none">
-                <span className="text-[#ff478d] text-2xl md:text-3xl font-black uppercase tracking-tight">LADY BAGUNÇA</span>
+              <div className="flex flex-col items-center leading-none">
+                {/* Lady Bagunça - Estilo robusto em Rosa */}
+                <span className="text-[#ff478d] text-xl md:text-2xl font-black tracking-wider uppercase">
+                  LADY BAGUNÇA
+                </span>
+                
+                {/* Outlet da Beleza - Estilo cursivo/itálico em Laranja */}
+                <div className="flex items-center gap-1.5 mt-0.5">
+                  <span className="text-xs md:text-sm font-medium italic text-[#eb5a22] font-serif tracking-normal">
+                    Outlet
+                  </span>
+                  <span className="text-[10px] md:text-xs font-black uppercase tracking-widest text-[#eb5a22]">
+                    DA BELEZA
+                  </span>
+                </div>
               </div>
             </div>
             
