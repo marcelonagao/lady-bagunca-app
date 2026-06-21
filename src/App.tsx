@@ -50,24 +50,25 @@ const BANNERS = [
   }
 ];
 
-// Categorias com Imagens (Futuramente virão do Firebase)
+// Categorias com Imagens (Links atualizados)
 const CATEGORIES_DATA = [
   { name: 'Todas', image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=300&q=80' },
-  { name: 'Maquiagem', image: 'https://images.unsplash.com/photo-1512496115841-db0aaf528090?auto=format&fit=crop&w=300&q=80' },
+  { name: 'Maquiagem', image: 'https://images.unsplash.com/photo-1522337660859-02fbefca4702?auto=format&fit=crop&w=300&q=80' },
   { name: 'Skincare', image: 'https://images.unsplash.com/photo-1599305090598-fe179d501227?auto=format&fit=crop&w=300&q=80' },
   { name: 'Perfumes', image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=300&q=80' },
   { name: 'Corpo e Banho', image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=300&q=80' },
   { name: 'Kits', image: 'https://images.unsplash.com/photo-1612817159949-195b6eb9e31a?auto=format&fit=crop&w=300&q=80' }
 ];
 
+// Produtos Mock com imagens atualizadas
 const mockProducts: Product[] = [
   { id: 'mock1', name: 'Batom Líquido Matte Rosa Selva Longa Duração', price: 29.90, discount: 38.90, category: 'Maquiagem', freeShipping: true, installments: 2, image: 'https://images.unsplash.com/photo-1586495777744-4413f21062fa?auto=format&fit=crop&w=400&q=80' },
-  { id: 'mock2', name: 'Paleta de Sombras Neon Vibes 12 Cores Pigmentadas', price: 89.90, discount: 119.90, category: 'Maquiagem', freeShipping: true, installments: 3, image: 'https://images.unsplash.com/photo-1512496115841-db0aaf528090?auto=format&fit=crop&w=400&q=80' },
+  { id: 'mock2', name: 'Paleta de Sombras Neon Vibes 12 Cores Pigmentadas', price: 89.90, discount: 119.90, category: 'Maquiagem', freeShipping: true, installments: 3, image: 'https://images.unsplash.com/photo-1596462502278-27bf85033e5a?auto=format&fit=crop&w=400&q=80' },
   { id: 'mock3', name: 'Base Cobertura Extrema Glow FPS 30', price: 55.00, category: 'Maquiagem', installments: 2, image: 'https://images.unsplash.com/photo-1599305090598-fe179d501227?auto=format&fit=crop&w=400&q=80' },
   { id: 'mock4', name: 'Sérum Facial Vitamina C Pura Anti-Idade', price: 120.00, discount: 150.00, category: 'Skincare', freeShipping: true, installments: 6, image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?auto=format&fit=crop&w=400&q=80' },
   { id: 'mock5', name: 'Kit SkinCare Completo Bagunça (Limpeza + Hidratação)', price: 199.90, discount: 250.00, category: 'Kits', freeShipping: true, installments: 6, image: 'https://images.unsplash.com/photo-1556228578-0d85b1a4d571?auto=format&fit=crop&w=400&q=80' },
   { id: 'mock6', name: 'Perfume Floral Rosa Selvagem Eau de Parfum 100ml', price: 145.00, category: 'Perfumes', freeShipping: true, installments: 5, image: 'https://images.unsplash.com/photo-1594035910387-fea47794261f?auto=format&fit=crop&w=400&q=80' },
-  { id: 'mock7', name: 'Máscara de Cílios Volume Máximo', price: 34.90, category: 'Maquiagem', image: 'https://images.unsplash.com/photo-1555487353-a460ee301029?auto=format&fit=crop&w=400&q=80' },
+  { id: 'mock7', name: 'Máscara de Cílios Volume Máximo', price: 34.90, category: 'Maquiagem', image: 'https://images.unsplash.com/photo-1631214500515-e411b0d41025?auto=format&fit=crop&w=400&q=80' },
   { id: 'mock8', name: 'Hidratante Corporal Framboesa 400ml', price: 45.00, discount: 55.00, category: 'Corpo e Banho', installments: 2, image: 'https://images.unsplash.com/photo-1608248543803-ba4f8c70ae0b?auto=format&fit=crop&w=400&q=80' },
 ];
 
@@ -244,8 +245,13 @@ export default function App() {
                     key={banner.id}
                     className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0 z-0'}`}
                   >
-                    <img src={banner.image} alt={banner.alt} className="w-full h-full object-cover" />
-                    {/* Overlay escuro suave para legibilidade caso tenha texto em cima da imagem */}
+                    {/* Adicionado onError no banner */}
+                    <img 
+                      src={banner.image} 
+                      alt={banner.alt} 
+                      className="w-full h-full object-cover" 
+                      onError={(e) => { e.currentTarget.src = 'https://placehold.co/1600x600/f3f4f6/a1a1aa?text=Banner+da+Loja'; }}
+                    />
                     <div className="absolute inset-0 bg-black/10"></div>
                   </div>
                 ))}
@@ -284,7 +290,13 @@ export default function App() {
                         className={`snap-start shrink-0 cursor-pointer group flex flex-col items-center gap-3 w-24 md:w-32`}
                       >
                         <div className={`w-20 h-20 md:w-28 md:h-28 rounded-2xl overflow-hidden relative shadow-sm transition-transform duration-300 group-hover:scale-105 border-2 ${selectedCategory === category.name ? 'border-[#eb5a22]' : 'border-transparent'}`}>
-                           <img src={category.image} alt={category.name} className="w-full h-full object-cover" />
+                           {/* Adicionado onError nas categorias */}
+                           <img 
+                             src={category.image} 
+                             alt={category.name} 
+                             className="w-full h-full object-cover bg-gray-100" 
+                             onError={(e) => { e.currentTarget.src = 'https://placehold.co/300x300/f3f4f6/a1a1aa?text=Sem+Foto'; }}
+                           />
                            <div className="absolute inset-0 bg-black/10 group-hover:bg-black/0 transition"></div>
                         </div>
                         <span className={`text-xs md:text-sm text-center font-semibold ${selectedCategory === category.name ? 'text-[#eb5a22]' : 'text-gray-700 group-hover:text-[#eb5a22]'}`}>
@@ -341,7 +353,13 @@ export default function App() {
 
                       {/* Imagem do Produto Centralizada */}
                       <div className="aspect-square bg-white relative p-4 flex items-center justify-center cursor-pointer">
-                        <img src={product.image} alt={product.name} className="max-w-full max-h-full object-contain group-hover:scale-105 transition duration-500" />
+                        {/* Adicionado onError na imagem do produto */}
+                        <img 
+                          src={product.image} 
+                          alt={product.name} 
+                          className="max-w-full max-h-full object-contain group-hover:scale-105 transition duration-500" 
+                          onError={(e) => { e.currentTarget.src = 'https://placehold.co/400x400/f3f4f6/a1a1aa?text=Sem+Imagem'; }}
+                        />
                       </div>
 
                       {/* Informações Centralizadas */}
@@ -413,7 +431,13 @@ export default function App() {
                     {cart.map((item, index) => (
                       <li key={index} className="py-6 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
                         <div className="flex items-center gap-4">
-                          <img src={item.image} alt={item.name} className="w-20 h-20 object-contain bg-gray-50 p-2 rounded-xl border border-gray-100" />
+                          {/* Adicionado onError nas imagens do carrinho */}
+                          <img 
+                            src={item.image} 
+                            alt={item.name} 
+                            className="w-20 h-20 object-contain bg-gray-50 p-2 rounded-xl border border-gray-100" 
+                            onError={(e) => { e.currentTarget.src = 'https://placehold.co/100x100/f3f4f6/a1a1aa?text=Foto'; }}
+                          />
                           <div>
                             <span className="text-sm md:text-base font-medium text-gray-800 block mb-1">{item.name}</span>
                             <span className="text-xs text-gray-500 bg-gray-100 px-2 py-1 rounded-md">Qtd: 1</span>
