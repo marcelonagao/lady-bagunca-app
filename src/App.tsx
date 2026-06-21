@@ -147,7 +147,7 @@ export default function App() {
                 <input 
                   type="text" 
                   placeholder="Buscar produtos, marcas e muito mais..." 
-                  className="w-full py-2.5 px-4 pr-12 rounded-sm shadow-sm focus:outline-none text-sm text-gray-700"
+                  className="w-full bg-white py-2.5 px-4 pr-12 rounded-sm shadow-sm focus:outline-none text-sm text-gray-700"
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                 />
@@ -179,7 +179,7 @@ export default function App() {
               <input 
                 type="text" 
                 placeholder="Buscar em Lady Bagunça..." 
-                className="w-full py-2 px-4 pr-10 rounded-sm shadow-sm focus:outline-none text-sm"
+                className="w-full bg-white py-2 px-4 pr-10 rounded-sm shadow-sm focus:outline-none text-sm text-gray-700"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
