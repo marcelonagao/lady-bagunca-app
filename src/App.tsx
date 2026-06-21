@@ -20,7 +20,7 @@ const db = getFirestore(app);
 // 🎨 LINK DA SUA LOGOMARCA AQUI:
 // Dica: Use uma imagem PNG com fundo transparente para o melhor resultado no cabeçalho branco!
 // Se o arquivo estiver na pasta 'public' do seu projeto, basta colocar "/logo.png".
-const LOGO_URL = "https://placehold.co/250x70/ffffff/ff478d?text=LADY+BAGUN%C3%87A"; 
+const LOGO_URL = "/logo.jpg"; 
 
 // ==========================================
 // 2. TIPAGENS & DADOS DE TESTE
